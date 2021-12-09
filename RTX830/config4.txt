@@ -1,36 +1,29 @@
-# RTX830 Rev.15.02.20 (Fri Apr 16 09:37:54 2021)
-# MAC Address : ac:44:f2:91:ee:2c, ac:44:f2:91:ee:2d
-# Memory 256Mbytes, 2LAN
-# main:  RTX830 ver=00 serial=M5B231696 MAC-Address=ac:44:f2:91:ee:2c MAC-Address=ac:44:f2:91:ee:2d
-# Reporting Date: Dec 9 22:20:54 2021
-administrator password encrypted *
+#15 2 20 0
+login password b3netginko
+administrator password encrypted ZqMLeV1adkhRQLYx9BQg5ccOLwu54fQK
+login user nakatake encrypted N8rstz5L66/15E6wvjhmREt3ebzOjAUM
 user attribute connection=serial,telnet,remote,ssh,sftp,http gui-page=dashboard,lan-map,config login-timer=36000
-description lan2 かもめ
-# L2MS機能を用いるかどうかの設定
-switch control use lan1 on terminal=on
-# ipv6設定
+user attribute nakatake connection=serial,telnet,remote,ssh,sftp,http gui-page=dashboard,lan-map,config login-timer=360000
+ip route default gateway tunnel 1
 ipv6 prefix 1 ra-prefix@lan2::/64
+ip lan1 address 10.0.0.1/15
 ipv6 lan1 address ra-prefix@lan2::1/64
 ipv6 lan1 rtadv send 1 o_flag=on
 ipv6 lan1 dhcp service server
-ipv6 lan2 dhcp service client ir=on
+switch control use lan1 on terminal=on
+description lan2 かも�
 ipv6 lan2 secure filter in 101000 101001 101002 101003
 ipv6 lan2 secure filter out 101099 dynamic 101080 101081 101082 101083 101084 101085 101098 101099
-# ipv4トンネル設定
-ip route default gateway tunnel 1
-ip lan1 address 10.0.0.1/8
+ipv6 lan2 dhcp service client ir=on
+pp disable all
+no tunnel enable all
 tunnel select 1
  tunnel encapsulation map-e
- tunnel map-e type v6plus
  ip tunnel mtu 1460
  ip tunnel secure filter in 400003 400020 400021 400022 400023 400024 400025 400030 400032
  ip tunnel secure filter out 400013 400020 400021 400022 400023 400024 400025 400026 400027 400099 dynamic 400080 400081 400082 400083 400084 400085 400098 400099
  ip tunnel nat descriptor 20000
-tunnel enable 1
-# NATの設定
-nat descriptor type 20000 masquerade
-nat descriptor address outer 20000 map-e
-# ipv4のフィルター
+ tunnel enable 1
 ip filter 400000 reject 10.0.0.0/8 * * * *
 ip filter 400001 reject 172.16.0.0/12 * * * *
 ip filter 400002 reject 192.168.0.0/16 * * * *
@@ -65,7 +58,8 @@ ip filter dynamic 400084 * * pop3
 ip filter dynamic 400085 * * submission
 ip filter dynamic 400098 * * tcp
 ip filter dynamic 400099 * * udp
-# ipv6のフィルター
+nat descriptor type 20000 masquerade
+nat descriptor address outer 20000 map-e
 ipv6 filter 101000 pass * * icmp6 * *
 ipv6 filter 101001 pass * * tcp * ident
 ipv6 filter 101002 pass * * udp * 546
@@ -80,17 +74,10 @@ ipv6 filter dynamic 101085 * * submission
 ipv6 filter dynamic 101098 * * tcp
 ipv6 filter dynamic 101099 * * udp
 telnetd service off
-# DHCPサーバー(IPv4)の設定
 dhcp service server
 dhcp server rfc2131 compliant except remain-silent
 dhcp scope 1 10.0.0.1-10.2.5.255/14
 dhcp scope 2 10.5.0.2-10.5.255.255/16
-dhcp scope lease type 1 bind-priority
-dhcp scope lease type 2 bind-priority
-# 静的フィルターの設定
-ethernet filter 1 pass-nolog dhcp-bind 1
-ethernet filter 2 reject-nolog dhcp-bind 2
-ethernet lan1 filter in 1 2
 dhcp scope bind 1 10.1.0.11 ac:84:c6:e8:1c:6d
 dhcp scope bind 1 10.1.0.12 0c:80:63:2e:c7:42
 dhcp scope bind 1 10.1.0.13 0c:80:63:2e:bb:d5
@@ -294,7 +281,6 @@ dhcp scope bind 1 10.2.4.216 82:a5:0c:51:2c:4f
 dhcp scope bind 1 10.2.4.217 82:a5:0c:06:39:77
 dhcp scope bind 1 10.2.4.253 82:a5:0c:8a:2a:1e
 dhcp scope bind 1 10.2.4.255 82:a5:0c:68:0a:af
-# DNSの設定
 dns host lan1
 dns service fallback on
 dns server dhcp lan2
