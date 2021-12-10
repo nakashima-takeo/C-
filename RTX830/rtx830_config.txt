@@ -30,9 +30,9 @@ tunnel select 1
  ip tunnel nat descriptor 20000
 tunnel enable 1
 ip route default gateway tunnel 1
-# NATの設定
-nat descriptor type 20000 masquerade
-nat descriptor address outer 20000 map-e
+# NATの設定(外側はmap-eから自動取得のIPアドレス)
+nat descriptor type 1000 masquerade
+nat descriptor address outer 1000 map-e
 # ipv4のフィルター
 ip filter 400000 reject 10.0.0.0/8 * * * *
 ip filter 400001 reject 172.16.0.0/12 * * * *
@@ -85,7 +85,7 @@ ipv6 filter dynamic 101099 * * udp
 telnetd service off
 # DHCPサーバー(IPv4)の設定
 dhcp service server
-dhcp server rfc2131 compliant except remain-silent
+dhcp server rfc2131 compliant except use-clientid
 dhcp scope 1 10.0.0.1-10.2.5.255/14
 dhcp scope 2 10.5.0.2-10.5.255.255/16
 dhcp scope lease type 1 bind-only fallback=2
