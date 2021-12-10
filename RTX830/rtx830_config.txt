@@ -9,6 +9,7 @@ login user nakatake encrypted N8rstz5L66/15E6wvjhmREt3ebzOjAUM
 user attribute connection=serial,telnet,remote,ssh,sftp,http gui-page=dashboard,lan-map,config login-timer=36000
 user attribute nakatake connection=serial,telnet,remote,ssh,sftp,http gui-page=dashboard,lan-map,config login-timer=360000
 description lan2 かもめ
+ip lan1 address 10.0.0.1/8
 # L2MS機能を用いるかどうかの設定
 switch control use lan1 on terminal=on
 # ipv6設定
@@ -20,9 +21,6 @@ ipv6 lan2 dhcp service client ir=on
 ipv6 lan2 secure filter in 101000 101001 101002 101003
 ipv6 lan2 secure filter out 101099 dynamic 101080 101081 101082 101083 101084 101085 101098 101099
 # ipv4トンネル設定
-pp disable all
-no tunnel enable all
-ip lan1 address 10.0.0.1/8
 tunnel select 1
  tunnel encapsulation map-e
  tunnel map-e type v6plus
@@ -307,3 +305,5 @@ dns server select 500000 dhcp lan2 any .
 dns private address spoof on
 statistics traffic on
 statistics nat on
+operation http revision-up permit on
+operation button function download http revision-up
