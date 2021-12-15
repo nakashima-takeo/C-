@@ -15,7 +15,7 @@ switch control use lan1 on terminal=on
 # ipv6設定
 ipv6 prefix 1 ra-prefix@lan2::/64
 ipv6 lan1 address ra-prefix@lan2::1/64
-ipv6 lan1 rtadv send 1 o_flag=on
+ipv6 lan1 rtadv send 1 o_flag=on m_flag=on
 ipv6 lan1 dhcp service server
 ipv6 lan2 dhcp service client ir=on
 ipv6 lan2 secure filter in 101000 101001 101002 101003
@@ -31,8 +31,8 @@ tunnel select 1
 tunnel enable 1
 ip route default gateway tunnel 1
 # NATの設定(外側はmap-eから自動取得のIPアドレス)
-nat descriptor type 1000 masquerade
-nat descriptor address outer 1000 map-e
+nat descriptor type 20000 masquerade
+nat descriptor address outer 20000 map-e
 # ipv4のフィルター
 ip filter 400000 reject 10.0.0.0/8 * * * *
 ip filter 400001 reject 172.16.0.0/12 * * * *
@@ -82,7 +82,6 @@ ipv6 filter dynamic 101084 * * pop3
 ipv6 filter dynamic 101085 * * submission
 ipv6 filter dynamic 101098 * * tcp
 ipv6 filter dynamic 101099 * * udp
-telnetd service off
 # DHCPサーバー(IPv4)の設定
 dhcp service server
 dhcp server rfc2131 compliant except use-clientid
@@ -91,9 +90,9 @@ dhcp scope 2 10.5.0.2-10.5.255.255/16
 dhcp scope lease type 1 bind-only fallback=2
 dhcp scope lease type 2 bind-priority
 # 静的フィルターの設定
-# ethernet filter 1 pass-nolog dhcp-bind 1
-# ethernet filter 2 reject-nolog dhcp-bind 2
-# ethernet lan1 filter in 1 2
+ethernet filter 1 reject-nolog dhcp-not-bind 2
+ethernet filter 2 pass-nolog *
+ethernet lan1 filter in 1 2
 dhcp scope bind 1 10.1.0.11 ac:84:c6:e8:1c:6d
 dhcp scope bind 1 10.1.0.12 0c:80:63:2e:c7:42
 dhcp scope bind 1 10.1.0.13 0c:80:63:2e:bb:d5
@@ -305,5 +304,6 @@ dns server select 500000 dhcp lan2 any .
 dns private address spoof on
 statistics traffic on
 statistics nat on
+telnetd service off
 operation http revision-up permit on
 operation button function download http revision-up
